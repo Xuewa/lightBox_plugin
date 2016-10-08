@@ -1,7 +1,7 @@
 define(['jquery','Widget'],function($,w) {
 	function LightBox(config){
 		this.extend(config);
-		console.log(this.config);
+		// console.log(this.config);
 	};
 	LightBox.prototype=$.extend({},new w.Widget(),{
 		renderUI:function(){
@@ -61,13 +61,55 @@ define(['jquery','Widget'],function($,w) {
 			e.data.global.displayBoxDom.fadeIn().animate({
 				top:'50%',
 				marginTop:'-12.5%'
-			},200/*,function(){
-				e.data.global.display_img.attr('src',src);
+			},200,function(){
+				//获取imgDom的原大小
+				e.data.global.loadPic(src);
+				// var imgWidth=imgDom.width();
+				// var imgHeight=imgDom.height();
+				// console.log(imgWidth+'-----'+imgHeight);
+				/*e.data.global.display_img.attr('src',src);
 				e.data.global.display_img.attr('index',index);
 				e.data.global.display_img.attr('groupIdx',groupIndex);
-				e.data.global.descTextDom.text(text);
-			}*/);
+				e.data.global.descTextDom.text(text);*/
+			});
 			
+		},
+		loadPic:function(src){
+			//获取该图片的大小
+			var _this=this;
+			var callback=function(){
+				_this.display_img.attr('src',src);
+				_this.display_img.removeClass('loading_img');
+				var picWidth=_this.display_img.width();
+				var picHeight=_this.display_img.height();
+				console.log(picWidth+'-----'+picHeight);
+				_this.changPic(picWidth,picHeight);
+			};
+
+			var img=new Image();
+			// console.log(img);
+			if(!!window.ActiveXObject){
+				img.onreadystatechange==function(){
+					if(this.readyState=='complete'){
+						callback();
+					}
+				}
+			}else{
+				// console.log('aaaa');
+				img.onload=function(){
+					// console.log('aaaa');
+					callback();
+				}
+			}
+			
+			img.src=src;
+
+		},
+		changPic:function(width,height){
+			this.displayBoxDom.animate({
+				width:width,
+				height:height
+			});
 		},
 		bindUI:function(){
 			var _this=this;
