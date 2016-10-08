@@ -50,10 +50,8 @@ define(['jquery','Widget'],function($,w) {
 			// console.log('click');
 			var imgDom=e.data.imgDom;
 			e.data.global.displayDescDom.hide();
-			// e.data.global.display_img.hide();
 			//遮罩层
 			e.data.global.maskDom.fadeIn();
-			// console.log(imgDom);
 			var src=imgDom.attr('src');
 			var text=imgDom.attr('text');
 			var index=imgDom.attr('index');
@@ -72,14 +70,12 @@ define(['jquery','Widget'],function($,w) {
 				e.data.global.display_img.attr('index',index);
 				e.data.global.display_img.attr('groupIdx',groupIndex);
 			});
-			
 		},
 		loadPic:function(src){
 			//获取该图片的大小
 			var _this=this;
 			var callback=function(){
-				_this.display_img.attr('src',src);
-				_this.display_img.removeClass('loading_img');
+				_this.display_img.attr('src',src).removeClass('loading_img');
 				var picWidth=_this.display_img.width();
 				var picHeight=_this.display_img.height();
 				_this.display_img.hide();
@@ -149,6 +145,17 @@ define(['jquery','Widget'],function($,w) {
 			this.close_btn.on('click',{global:_this},this.closeFunc);
 			this.displayBoxDom.on('mouseover',{global:_this},this.showPrevOrNext);
 			this.displayBoxDom.on('mouseout',{global:_this},this.hidePrevOrNext);
+			this.prev_btn.on('click',function(){
+				var index=parseInt(_this.display_img.attr('index'));
+				index--;
+				var groupIndex=parseInt(_this.display_img.attr('groupIdx'));
+				var item=$('[index='+index+'][groupIdx='+groupIndex+']');
+				// console.log(item);
+				var src=item.attr('src');
+				_this.loadPic(src);
+				_this.display_img.attr('index',index);
+				_this.display_img.attr('groupIdx',groupIndex);
+			});
 		},
 		closeFunc:function(e){
 			e.data.global.maskDom.fadeOut();
@@ -158,6 +165,7 @@ define(['jquery','Widget'],function($,w) {
 		showPrevOrNext:function(e){
 			var index=e.data.global.display_img.attr('index');
 			var groupIndex=e.data.global.display_img.attr('groupIdx');
+			// console.log(e.data.global.config.pics[groupIndex-1]);
 			var groupSize=e.data.global.config.pics[groupIndex-1].length;
 			if(index>1)	e.data.global.prev_btn.show();
 			if(index<groupSize) e.data.global.next_btn.show();
