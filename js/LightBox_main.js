@@ -8,7 +8,9 @@ require(['jquery','LightBox'],function($,lb){
 		pics:[
 				[	{src:'images/1-1.jpg',desc:'abcccccccccccccccccccccc'},
 					{src:'images/1-2.jpg',desc:'katingcheCar............'},
-					{src:'images/1-3.jpg',desc:'moutaining...............................'}
+					{src:'images/1-3.jpg',desc:'moutaining...............................'},
+					{src:'images/1-4.jpg',desc:'moutaining...............................'},
+					{src:'images/1-5.jpg',desc:'moutaining...............................'},
 				],
 				[
 					{src:'images/2-1.jpg',desc:'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk'},

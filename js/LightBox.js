@@ -58,19 +58,19 @@ define(['jquery','Widget'],function($,w) {
 			var text=imgDom.attr('text');
 			var index=imgDom.attr('index');
 			var groupIndex=imgDom.attr('groupIdx');
-			e.data.global.displayBoxDom.fadeIn().animate({
-				top:'50%',
-				marginTop:'-12.5%'
-			},200,function(){
-				//获取imgDom的原大小
+			var winWidth=$(window).width();
+			var winHeight=$(window).height();
+			e.data.global.displayBoxDom.css({
+				width:winWidth*.5,
+				height:winHeight*.5,
+				left:winWidth*.5/2+'px',
+				top:-winHeight+'px',
+			}).fadeIn().animate({
+				top:winHeight*.5/2+'px',
+			},700,function(){
 				e.data.global.loadPic(src);
-				// var imgWidth=imgDom.width();
-				// var imgHeight=imgDom.height();
-				// console.log(imgWidth+'-----'+imgHeight);
-				/*e.data.global.display_img.attr('src',src);
 				e.data.global.display_img.attr('index',index);
 				e.data.global.display_img.attr('groupIdx',groupIndex);
-				e.data.global.descTextDom.text(text);*/
 			});
 			
 		},
@@ -82,34 +82,62 @@ define(['jquery','Widget'],function($,w) {
 				_this.display_img.removeClass('loading_img');
 				var picWidth=_this.display_img.width();
 				var picHeight=_this.display_img.height();
-				console.log(picWidth+'-----'+picHeight);
+				_this.display_img.hide();
+				// console.log(picWidth+'-----'+picHeight);
 				_this.changPic(picWidth,picHeight);
 			};
 
 			var img=new Image();
-			// console.log(img);
 			if(!!window.ActiveXObject){
 				img.onreadystatechange==function(){
-					if(this.readyState=='complete'){
+					if(this.readyState=='complete')
 						callback();
-					}
 				}
 			}else{
-				// console.log('aaaa');
 				img.onload=function(){
-					// console.log('aaaa');
 					callback();
 				}
 			}
-			
 			img.src=src;
-
 		},
 		changPic:function(width,height){
+			var _this=this;
+			var winWidth=$(window).width()*.8;
+			var winHeight=$(window).height()*.8;
+			var per_x=width/winWidth;
+			var per_y=height/winHeight;
+			//两个方向均超出
+			if(per_x>1 && per_y>1) {
+				if(per_x>=per_y) {
+					height=winHeight/per_x;
+					width=winWidth;
+				}else if(per_y>per_x){
+					width=winWidth/per_y;
+					height=winHeight;
+				}
+			}
+			//横向超出
+			else if(per_x>1){
+				height=winHeight/per_x;
+				width=winWidth;
+			}
+			//垂直方向超出
+			else if(per_y>1){
+				width=winWidth/per_y;
+				height=winHeight;
+			}
 			this.displayBoxDom.animate({
+				left:($(window).width()-width)/2+'px',
+				top:($(window).height()-height)/2+'px',
 				width:width,
 				height:height
-			});
+			},600,function(){
+					_this.display_img.css({
+						width:width,
+						height:height
+					}).fadeIn();
+				}
+			);
 		},
 		bindUI:function(){
 			var _this=this;
@@ -125,6 +153,7 @@ define(['jquery','Widget'],function($,w) {
 		closeFunc:function(e){
 			e.data.global.maskDom.fadeOut();
 			e.data.global.displayBoxDom.fadeOut();
+			e.data.global.display_img.fadeOut();
 		},
 		showPrevOrNext:function(e){
 			var index=e.data.global.display_img.attr('index');
