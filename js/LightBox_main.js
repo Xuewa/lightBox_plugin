@@ -5,6 +5,7 @@ require.config({
 });
 require(['jquery','LightBox'],function($,lb){
 	var lightBox=new lb.LightBox({
+		loading_src:'images/loading.gif',
 		pics:[
 				[	{src:'images/1-1.jpg',desc:'abcccccccccccccccccccccc'},
 					{src:'images/1-2.jpg',desc:'katingcheCar............'},
