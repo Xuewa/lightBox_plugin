@@ -158,6 +158,12 @@ define(['jquery','Widget'],function($,w) {
 			this.displayDescDom.show();
 			this.close_btn.show();
 		},
+		addLoadingClass:function(){
+			this.display_img.attr('src',this.config.loading_src).css({
+				width:'auto',
+				height:'auto'
+			}).addClass('loading_img');
+		},
 		bindUI:function(){
 			var _this=this;
 			$('.pic_s').each(function(){
@@ -168,46 +174,42 @@ define(['jquery','Widget'],function($,w) {
 			this.close_btn.on('click',{global:_this},this.closeFunc);
 			this.displayBoxDom.on('mouseover',{global:_this},this.showPrevOrNext);
 			this.displayBoxDom.on('mouseout',{global:_this},this.hidePrevOrNext);
-			this.prev_btn.on('click',function(){
-				var index=parseInt(_this.display_img.attr('index'));
-				index--;
-				var groupIndex=parseInt(_this.display_img.attr('groupIdx'));
-				var text=_this.config.pics[groupIndex-1][index-1].desc;
-				console.log(text);
-				var item=$('[index='+index+'][groupIdx='+groupIndex+']');
-				// console.log(item);
-				var src=item.attr('src');
-				_this.display_img.attr('src',_this.config.loading_src).css({
-					width:'auto',
-					height:'auto'
-				}).addClass('loading_img');
-				// debugger
-				_this.loadPic(src);
-				_this.afterLoadPic(index,groupIndex,text);
-			});
-			this.next_btn.on('click',function(){
-				var index=parseInt(_this.display_img.attr('index'));
-				index++;
-				var groupIndex=parseInt(_this.display_img.attr('groupIdx'));
-				var text=_this.config.pics[groupIndex-1][index-1].desc;
-				console.log(text);
-				var item=$('[index='+index+'][groupIdx='+groupIndex+']');
-				// console.log(item);
-				var src=item.attr('src');
-				_this.display_img.attr('src',_this.config.loading_src).css({
-					width:'auto',
-					height:'auto'
-				}).addClass('loading_img');
-				// debugger
-				_this.loadPic(src);
-				_this.afterLoadPic(index,groupIndex,text);
-			});
+			this.prev_btn.on('click',{global:this},this.nextFunc);
+			this.next_btn.on('click',{global:this},this.prevFunc);
+		},
+		prevFunc:function(e){
+			var _this=e.data.global;
+			var index=parseInt(_this.display_img.attr('index'));
+			index++;
+			var groupIndex=parseInt(_this.display_img.attr('groupIdx'));
+			var text=_this.config.pics[groupIndex-1][index-1].desc;
+			console.log(text);
+			var item=$('[index='+index+'][groupIdx='+groupIndex+']');
+			// console.log(item);
+			var src=item.attr('src');
+			_this.addLoadingClass();
+			// debugger
+			_this.loadPic(src);
+			_this.afterLoadPic(index,groupIndex,text);
+		},
+		nextFunc:function(e){
+			var _this=e.data.global;
+			var index=parseInt(_this.display_img.attr('index'));
+			index--;
+			var groupIndex=parseInt(_this.display_img.attr('groupIdx'));
+			var text=_this.config.pics[groupIndex-1][index-1].desc;
+			console.log(text);
+			var item=$('[index='+index+'][groupIdx='+groupIndex+']');
+			// console.log(item);
+			var src=item.attr('src');
+			_this.addLoadingClass();
+			_this.loadPic(src);
+			_this.afterLoadPic(index,groupIndex,text);
 		},
 		closeFunc:function(e){
 			e.data.global.maskDom.fadeOut();
-			e.data.global.displayBoxDom.fadeOut();
-			e.data.global.display_img.attr('src',e.data.global.config.loading_src).
-			css({width:'auto',height:'auto'}).addClass('loading_img');
+			e.data.global.displayBoxDom.fadeOut(10);
+			e.data.global.addLoadingClass();
 		},
 		showPrevOrNext:function(e){
 			var index=e.data.global.display_img.attr('index');
